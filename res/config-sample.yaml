@@ -1,14 +1,14 @@
 telegram:
     # this one you get from the @BotFather
-    token: xxxxxxxxx:yyyyy-zzzzzzzzzzzzzzzzzzzzzzzzzzzzz
+    token: 672784132:AAF3BPFARbO0eJcsmzjT5w0OiIsoeS5Rn18
     
     # the readme explains how to get the channel ID
-    feedback_chat_id: wwwwwwwwwwwwww
+    feedback_chat_id: 363219040
 
 mqtt:
     # you'll have to change all of these
-    host: 127.0.0.1
+    host: rtec.dekart.com
     port: 1885  # except the port number, this one is OK
-    username: haha
-    password: lala
+    username: public_rtec
+    password: iWillHackItInVisualBasic
 

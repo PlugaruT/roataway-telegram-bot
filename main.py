@@ -165,15 +165,15 @@ class Infobot:
             station_name = self.all_stations[station_id]
             etas = self.predictions[route].get(station_id, [])
             if not etas:
-                result += f"{station_name}: 🚫\n"
+                result += f"{'       '}{station_name}: 🚫\n"
                 continue
 
-            string_etas = ", ".join([str(item) for item in etas])
+            string_etas = ", ".join([str(item) for item in etas[:3]])
             current_prognosis = etas[0]
             if current_prognosis == 0:
                 # it means the trolleybus is there right now, let's add a
                 # trolleybus icon, for a better effect
-                result += f"{c.ICON_BUS} {station_name}: {string_etas}\n"
+                result += f"{c.ICON_BUS}{station_name}: {string_etas}\n"
             else:
                 if (
                     last_prognosis is not None
@@ -184,9 +184,9 @@ class Infobot:
                     # between stations, so we render a bus icon between stations
                     # result += f'{c.ICON_BUS} în tranzit...\n'
                     result += f"{c.ICON_BUS} \n"
-                result += f"{station_name}: {string_etas}\n"
+                result += f"{' '*6}{station_name}:{' '*(43-29)}`{string_etas}`\n"
             last_prognosis = current_prognosis
-
+        print(result)
         return result
 
     @staticmethod
@@ -230,16 +230,16 @@ class Infobot:
                 chat_id=update.message.chat_id, text=etas, parse_mode=ParseMode.MARKDOWN
             )
 
-            self.send_locations(bot, update.message.chat_id, route)
-            nudges = c.MSG_FEEDBACK_NUDGE + "\n" + c.MSG_CREDIT + "\n" + c.MSG_CHANGELOG
-            bot.sendMessage(
-                chat_id=update.message.chat_id,
-                text=nudges,
-                parse_mode=ParseMode.HTML,
-                disable_notification=True,
-                disable_web_page_preview=True,
-            )
-
+            # self.send_locations(bot, update.message.chat_id, route)
+            # nudges = c.MSG_FEEDBACK_NUDGE + "\n" + c.MSG_CREDIT + "\n" + c.MSG_CHANGELOG
+            # bot.sendMessage(
+            #     chat_id=update.message.chat_id,
+            #     text=nudges,
+            #     parse_mode=ParseMode.HTML,
+            #     disable_notification=True,
+            #     disable_web_page_preview=True,
+            # )
+            
     @staticmethod
     def on_bot_help(bot, update):
         """Send a message when the command /help is issued."""
