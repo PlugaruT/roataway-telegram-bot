@@ -147,25 +147,39 @@ class Infobot:
         """Form a digest of ETAs for a given route and optionally, a station_id
         :param route: str, route number/name
         :param station_id: int, optional, station for which you want the data"""
+
+        def form_header(header: str, leading_nl=False):
+            response = f"*{header}*\n"
+            if leading_nl:
+                response = '\n' + response
+            return response
+
+        def form_line(station, etas, icon=False):
+            response = f"{station}:`{etas}`\n"
+            if icon:
+                response = c.ICON_BUS + response
+            else:
+                response = (' '*6) + response
+            return response
+
         if station_id is not None:
             data = self.predictions[route][station_id]
             return str(data)
 
         # otherwise it is a request for the whole thing
-        result = """*%s*\n""" % self.routes[route].segments[0]
+        result = form_header(self.routes[route].segments[0])
 
         last_prognosis = None
         for station_id in self.routes[route].station_sequence:
-            # if station_id == c.SPLIT_30:
             if station_id == self.routes[route].cutoff_station_id:
                 # for easier readability, we add the header for the return part
                 # of the route
-                result += "\n*%s*\n" "" % self.routes[route].segments[0]
+                result += form_header(self.routes[route].segments[0], True)
 
             station_name = self.all_stations[station_id]
             etas = self.predictions[route].get(station_id, [])
             if not etas:
-                result += f"{'       '}{station_name}: 🚫\n"
+                result += form_line(station_name, '🚫')
                 continue
 
             string_etas = ", ".join([str(item) for item in etas[:3]])
@@ -173,7 +187,7 @@ class Infobot:
             if current_prognosis == 0:
                 # it means the trolleybus is there right now, let's add a
                 # trolleybus icon, for a better effect
-                result += f"{c.ICON_BUS}{station_name}: {string_etas}\n"
+                result += form_line(station_name, string_etas, True)
             else:
                 if (
                     last_prognosis is not None
@@ -183,10 +197,10 @@ class Infobot:
                     # it means we're dealing with the case where the transport is
                     # between stations, so we render a bus icon between stations
                     # result += f'{c.ICON_BUS} în tranzit...\n'
-                    result += f"{c.ICON_BUS} \n"
-                result += f"{' '*6}{station_name}:{' '*(43-29)}`{string_etas}`\n"
+                    result += form_line('', '', icon=True)
+
+                result += form_line(station_name, string_etas)
             last_prognosis = current_prognosis
-        print(result)
         return result
 
     @staticmethod
